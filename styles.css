@@ -58,3 +58,9 @@ body {
   width: 150px;
   margin-bottom: 32px;
 }
+
+a {
+  color: #0066b3;
+  text-decoration: none;
+  margin-left: 5px;
+}
