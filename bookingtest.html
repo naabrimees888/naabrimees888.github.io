@@ -25,6 +25,9 @@
             const profile = googleUser.getBasicProfile();
             console.log('User signed in:', profile.getName());
 
+            // Hide the sign-in button
+            document.getElementById('gSignInWrapper').style.display = 'none';
+
             // Show the event form
             document.getElementById('eventForm').style.display = 'block';
         }
