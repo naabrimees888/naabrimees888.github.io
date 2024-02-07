@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add to Google Calendar</title>
+<script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+  <h1>Add to Google Calendar</h1>
+  <form id="eventForm">
+    <label for="eventName">Event Name:</label><br>
+    <input type="text" id="eventName" name="eventName" required><br>
+    <label for="eventDate">Event Date:</label><br>
+    <input type="date" id="eventDate" name="eventDate" required><br>
+    <label for="eventTime">Event Time:</label><br>
+    <input type="time" id="eventTime" name="eventTime" required><br><br>
+    <button type="button" id="addToCalendar">Add to Google Calendar</button>
+  </form>
+
+  <script>
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function initClient() {
+      gapi.client.init({
+        apiKey: 'YOUR_API_KEY',
+        clientId: 'YOUR_CLIENT_ID',
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+        scope: 'https://www.googleapis.com/auth/calendar.events'
+      }).then(function () {
+        console.log('Google Calendar API initialized');
+      });
+    }
+
+    document.getElementById('addToCalendar').addEventListener('click', function() {
+      var eventData = document.getElementById('eventForm').elements;
+      var eventName = eventData.namedItem('eventName').value;
+      var eventDate = eventData.namedItem('eventDate').value;
+      var eventTime = eventData.namedItem('eventTime').value;
+      var startDate = new Date(eventDate + 'T' + eventTime + ':00');
+      var endDate = new Date(startDate.getTime() + (60 * 60 * 1000)); // 1 hour duration
+
+      var event = {
+        'summary': eventName,
+        'start': {
+          'dateTime': startDate.toISOString(),
+          'timeZone': 'YOUR_TIME_ZONE'
+        },
+        'end': {
+          'dateTime': endDate.toISOString(),
+          'timeZone': 'Estonia/Tallinn'
+        }
+      };
+
+      var request = gapi.client.calendar.events.insert({
+        'calendarId': 'primary',
+        'resource': event
+      });
+
+      request.execute(function(event) {
+        console.log('Event created: ' + event.htmlLink);
+        window.open(event.htmlLink);
+      });
+    });
+  </script>
+  <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
+  </script>
+</body>
+</html>
