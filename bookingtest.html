@@ -92,7 +92,9 @@
         }
     </script>
 
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- Load Google API JavaScript library -->
+    <script src="https://apis.google.com/js/api.js"></script>
+
     <script>
         // Initialize Google Sign-In
         function initGoogleSignIn() {
@@ -114,10 +116,10 @@
             });
         }
 
-        // Load Google Sign-In
-        initGoogleSignIn();
+        // Load Google Sign-In and initialize
+        gapi.load('client:auth2', initGoogleSignIn);
     </script>
-    <script src="https://apis.google.com/js/api.js"></script>
+
     <script>
         gapi.load('client:auth2', initClient);
 
