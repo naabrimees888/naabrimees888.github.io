@@ -27,9 +27,8 @@
             }).then(function() {
                 console.log('Google Calendar API initialized');
 
-                // Check if the user is signed in
-                const isUserSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
-                console.log('User is signed in:', isUserSignedIn);
+                // Trigger sign-in when the page loads
+                gapi.auth2.getAuthInstance().signIn();
             });
         }
 
