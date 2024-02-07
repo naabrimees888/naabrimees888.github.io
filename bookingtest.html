@@ -12,11 +12,9 @@
     <label for="eventName">Event Name:</label><br>
     <input type="text" id="eventName" name="eventName" required><br>
     <label for="eventDate">Event Date:</label><br>
-    <input type="date" id="eventDate" name="eventDate" required><br>
-    <label for="eventTime">Event Time:</label><br>
-    <input type="time" id="eventTime" name="eventTime" required><br><br>
-    <button type="button" id="authorize_button">Authorize</button>
-    <button type="button" id="addToCalendar">Add to Google Calendar</button>
+    <input type="date" id="eventDate" name="eventDate" required><br><br>
+    <button type="button" id="authorize_button" style="display: none;">Authorize</button>
+    <button type="button" id="addToCalendar" style="display: none;">Add to Google Calendar</button>
   </form>
 
   <script>
@@ -64,19 +62,17 @@
       var eventData = document.getElementById('eventForm').elements;
       var eventName = eventData.namedItem('eventName').value;
       var eventDate = eventData.namedItem('eventDate').value;
-      var eventTime = eventData.namedItem('eventTime').value;
-      var startDate = new Date(eventDate + 'T' + eventTime + ':00');
-      var endDate = new Date(startDate.getTime() + (60 * 60 * 1000)); // 1 hour duration
+      var startDate = new Date(eventDate);
 
       var event = {
         'summary': eventName,
         'start': {
           'dateTime': startDate.toISOString(),
-          'timeZone': 'YOUR_TIME_ZONE'
+          'timeZone': 'Europe/Tallinn'
         },
         'end': {
-          'dateTime': endDate.toISOString(),
-          'timeZone': 'YOUR_TIME_ZONE'
+          'dateTime': startDate.toISOString(),
+          'timeZone': 'Europe/Tallinn'
         }
       };
 
