@@ -7,7 +7,7 @@
 <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
-  <h1>Add to Google Calendar</h1>
+  <h1>Add to Google Calendar test</h1>
   <form id="eventForm">
     <label for="eventName">Event Name:</label><br>
     <input type="text" id="eventName" name="eventName" required><br>
@@ -25,8 +25,8 @@
 
     function initClient() {
       gapi.client.init({
-        apiKey: 'YOUR_API_KEY',
-        clientId: 'YOUR_CLIENT_ID',
+        apiKey: 'AIzaSyBdz8fT3UzafG34pkIIZBekHCiSEiWoqI4',
+        clientId: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com',
         discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
         scope: 'https://www.googleapis.com/auth/calendar.events'
       }).then(function () {
@@ -46,7 +46,7 @@
         'summary': eventName,
         'start': {
           'dateTime': startDate.toISOString(),
-          'timeZone': 'YOUR_TIME_ZONE'
+          'timeZone': 'Estonia/Tallinn'
         },
         'end': {
           'dateTime': endDate.toISOString(),
