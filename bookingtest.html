@@ -5,7 +5,10 @@
 </head>
 <body>
     <h1>Add Event to Google Calendar</h1>
-    <form id="eventForm">
+    <div id="gSignInWrapper">
+        <div id="signInButton"></div>
+    </div>
+    <form id="eventForm" style="display:none;">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title"><br>
         <label for="date">Date:</label><br>
@@ -18,28 +21,27 @@
     </form>
 
     <script>
-        function createEvent(title, date, time, location) {
-            gapi.client.calendar.events.insert({
-                'calendarId': 'primary',
-                'resource': {
-                    'summary': title,
-                    'start': {
-                        'dateTime': date + 'T' + time + ':00',
-                        'timeZone': 'Tallinn'
-                    },
-                    'end': {
-                        'dateTime': date + 'T' + time + ':00',
-                        'timeZone': 'Tallinn'
-                    },
-                    'location': location
-                }
-            }).then(function(response) {
-                console.log('Event created:', response);
-                alert('Event added to Google Calendar!');
-            }, function(error) {
-                console.error('Error creating event:', error);
-                alert('Error adding event to Google Calendar. Please try again later.');
-            });
+        function onSuccess(googleUser) {
+            const idToken = googleUser.getAuthResponse().id_token;
+            console.log('ID Token:', idToken);
+
+            // Hide the sign-in button
+            document.getElementById('gSignInWrapper').style.display = 'none';
+
+            // Show the event form
+            document.getElementById('eventForm').style.display = 'block';
+        }
+
+        function onFailure(error) {
+            console.error('Google Sign-In failed:', error);
+        }
+
+        function onSignIn(googleUser) {
+            if (googleUser.isSignedIn()) {
+                onSuccess(googleUser);
+            } else {
+                onFailure();
+            }
         }
 
         document.getElementById('eventForm').addEventListener('submit', function(event) {
@@ -53,11 +55,63 @@
             // Call function to create event
             createEvent(title, date, time, location);
         });
+
+        function createEvent(title, date, time, location) {
+            const accessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+
+            fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'summary': title,
+                    'start': {
+                        'dateTime': date + 'T' + time + ':00',
+                        'timeZone': 'Tallinn'
+                    },
+                    'end': {
+                        'dateTime': date + 'T' + time + ':00',
+                        'timeZone': 'Tallinn'
+                    },
+                    'location': location
+                })
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Event created successfully');
+                    alert('Event added to Google Calendar!');
+                } else {
+                    console.error('Error creating event:', response.statusText);
+                    alert('Error adding event to Google Calendar. Please try again later.');
+                }
+            }).catch(error => {
+                console.error('Error creating event:', error);
+                alert('Error adding event to Google Calendar. Please try again later.');
+            });
+        }
     </script>
 
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+        // Initialize Google Sign-In
+        function initGoogleSignIn() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com'
+                }).then(function(auth2) {
+                    // Attach sign-in listeners
+                    auth2.attachClickHandler('signInButton', {}, onSignIn, onFailure);
+                });
+            });
+        }
+
+        // Load Google Sign-In
+        initGoogleSignIn();
+    </script>
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
-        gapi.load('client', initClient);
+        gapi.load('client:auth2', initClient);
 
         function initClient() {
             gapi.client.init({
