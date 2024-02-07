@@ -18,6 +18,21 @@
     </form>
 
     <script>
+        function initClient() {
+            gapi.client.init({
+                apiKey: 'AIzaSyBdz8fT3UzafG34pkIIZBekHCiSEiWoqI4',
+                clientId: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com',
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+                scope: 'https://www.googleapis.com/auth/calendar.events'
+            }).then(function() {
+                console.log('Google Calendar API initialized');
+
+                // Check if the user is signed in
+                const isUserSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
+                console.log('User is signed in:', isUserSignedIn);
+            });
+        }
+
         document.getElementById('eventForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -30,11 +45,11 @@
                 'summary': title,
                 'start': {
                     'dateTime': date + 'T' + time + ':00',
-                    'timeZone': 'YOUR_TIMEZONE'
+                    'timeZone': 'Europe/Tallinn'
                 },
                 'end': {
                     'dateTime': date + 'T' + time + ':00',
-                    'timeZone': 'YOUR_TIMEZONE'
+                    'timeZone': 'Europe/Tallinn'
                 },
                 'location': location
             };
@@ -55,17 +70,6 @@
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
         gapi.load('client:auth2', initClient);
-
-        function initClient() {
-            gapi.client.init({
-                apiKey: 'AIzaSyBdz8fT3UzafG34pkIIZBekHCiSEiWoqI4',
-                clientId: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com',
-                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-                scope: 'https://www.googleapis.com/auth/calendar.events'
-            }).then(function() {
-                console.log('Google Calendar API initialized');
-            });
-        }
     </script>
 </body>
 </html>
