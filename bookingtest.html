@@ -101,7 +101,15 @@
                     client_id: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com'
                 }).then(function(auth2) {
                     // Attach sign-in listeners
-                    auth2.attachClickHandler('signInButton', {}, onSignIn, onFailure);
+                    gapi.signin2.render('signInButton', {
+                        'scope': 'profile email',
+                        'width': 240,
+                        'height': 50,
+                        'longtitle': true,
+                        'theme': 'dark',
+                        'onsuccess': onSignIn,
+                        'onfailure': onFailure
+                    });
                 });
             });
         }
