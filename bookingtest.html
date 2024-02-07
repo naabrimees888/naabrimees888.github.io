@@ -18,23 +18,27 @@
     </form>
 
     <script>
-        function onSignIn(googleUser) {
-            // Handle sign-in here
-            console.log('User signed in:', googleUser);
-        }
-
-        function onFailure(error) {
-            console.error('Google Sign-In failed:', error);
-        }
-
-        function initGoogleSignIn() {
-            gapi.load('auth2', function() {
-                gapi.auth2.init({
-                    client_id: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com'
-                }).then(function(auth2) {
-                    // Attach sign-in listeners
-                    auth2.attachClickHandler('signInButton', {}, onSignIn, onFailure);
-                });
+        function createEvent(title, date, time, location) {
+            gapi.client.calendar.events.insert({
+                'calendarId': 'primary',
+                'resource': {
+                    'summary': title,
+                    'start': {
+                        'dateTime': date + 'T' + time + ':00',
+                        'timeZone': 'YOUR_TIMEZONE'
+                    },
+                    'end': {
+                        'dateTime': date + 'T' + time + ':00',
+                        'timeZone': 'YOUR_TIMEZONE'
+                    },
+                    'location': location
+                }
+            }).then(function(response) {
+                console.log('Event created:', response);
+                alert('Event added to Google Calendar!');
+            }, function(error) {
+                console.error('Error creating event:', error);
+                alert('Error adding event to Google Calendar. Please try again later.');
             });
         }
 
@@ -45,12 +49,26 @@
             const date = formData.get('date');
             const time = formData.get('time');
             const location = formData.get('location');
-            
-            // Handle event creation here
-            console.log('Creating event:', title, date, time, location);
+
+            // Call function to create event
+            createEvent(title, date, time, location);
         });
     </script>
 
-    <script src="https://apis.google.com/js/platform.js?onload=initGoogleSignIn" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        gapi.load('client:auth2', initClient);
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: 'YOUR_API_KEY',
+                clientId: 'YOUR_CLIENT_ID',
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+                scope: 'https://www.googleapis.com/auth/calendar.events'
+            }).then(function() {
+                console.log('Google Calendar API initialized');
+            });
+        }
+    </script>
 </body>
 </html>
