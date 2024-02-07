@@ -98,22 +98,28 @@
     <script>
         // Initialize Google Sign-In
         function initGoogleSignIn() {
-            gapi.load('auth2', function() {
-                gapi.auth2.init({
-                    client_id: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com'
-                }).then(function(auth2) {
-                    // Attach sign-in listeners
-                    gapi.signin2.render('signInButton', {
-                        'scope': 'profile email',
-                        'width': 240,
-                        'height': 50,
-                        'longtitle': true,
-                        'theme': 'dark',
-                        'onsuccess': onSignIn,
-                        'onfailure': onFailure
+            const auth2 = gapi.auth2.getAuthInstance();
+            if (!auth2) {
+                console.log('Initializing Google Sign-In');
+                gapi.load('auth2', function() {
+                    gapi.auth2.init({
+                        client_id: '1062970372713-ov7r58nb41bi2g1qmmm49gc655bmk9sm.apps.googleusercontent.com'
+                    }).then(function(auth2) {
+                        // Attach sign-in listeners
+                        gapi.signin2.render('signInButton', {
+                            'scope': 'profile email',
+                            'width': 240,
+                            'height': 50,
+                            'longtitle': true,
+                            'theme': 'dark',
+                            'onsuccess': onSignIn,
+                            'onfailure': onFailure
+                        });
                     });
                 });
-            });
+            } else {
+                console.log('Google Sign-In has already been initialized.');
+            }
         }
 
         // Load Google Sign-In and initialize
